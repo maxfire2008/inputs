@@ -2471,6 +2471,8 @@ class InputDevice(object):  # pylint: disable=useless-object-inheritance
             event = self._do_iter()
             if event:
                 yield event
+            else:
+                return None
 
     def _get_data(self, read_size):
         """Get data from the character device."""
@@ -2514,7 +2516,10 @@ class InputDevice(object):  # pylint: disable=useless-object-inheritance
 
     def read(self):
         """Read the next input event."""
-        return next(iter(self))
+        try:
+            return next(iter(self))
+        except StopIteration:
+            return None
 
     @property
     def _pipe(self):
@@ -2687,6 +2692,8 @@ class GamePad(InputDevice):
             event = self._do_iter()
             if event:
                 yield event
+            else:
+                return None
 
     def __check_state(self):
         """On Windows, check the state and fill the event character device."""
